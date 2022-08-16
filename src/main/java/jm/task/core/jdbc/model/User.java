@@ -18,6 +18,10 @@ public class User {
     @Column
     private Byte age;
 
+    public User(Long id, String name, String lastName, byte age) {
+
+    }
+
     public User() {
 
     }
