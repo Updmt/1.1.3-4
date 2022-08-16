@@ -13,7 +13,6 @@ public class Main {
         userService.saveUser("wqetb", "wegv", (byte) 13);
         userService.saveUser("gdsf", "gfsdfbv", (byte) 24);
         userService.removeUserById(4);
-        System.out.println(userService.getAllUsers());
         userService.cleanUsersTable();
         userService.dropUsersTable();
 

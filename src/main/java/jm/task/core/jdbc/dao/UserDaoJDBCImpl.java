@@ -24,65 +24,100 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void createUsersTable() {
         try (Connection connection = Util.getConnection(); PreparedStatement statement = connection.prepareStatement(create)) {
-            statement.executeUpdate();
+            try {
+                statement.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
 
     public void dropUsersTable() {
         try (Connection connection = Util.getConnection(); PreparedStatement statement = connection.prepareStatement(delete)) {
-            statement.executeUpdate();
+            try {
+                statement.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
     public void saveUser(String name, String lastName, byte age) {
         try (Connection connection = Util.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, name);
-            statement.setString(2, lastName);
-            statement.setByte(3, age);
-            statement.executeUpdate();
-            System.out.println("Пользователь с именем " + name + " добавлен в базу данных");
+            try {
+                statement.setString(1, name);
+                statement.setString(2, lastName);
+                statement.setByte(3, age);
+                statement.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
     public void removeUserById(long id) {
         try (Connection connection = Util.getConnection(); PreparedStatement statement = connection.prepareStatement(removeById)) {
-            statement.setLong(1, id);
-            statement.executeUpdate();
+            try {
+                statement.setLong(1, id);
+                statement.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         try (Connection connection = Util.getConnection(); PreparedStatement statement = connection.prepareStatement(getUsers)) {
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                User user = new User();
-                user.setId(rs.getLong(1));
-                user.setName(rs.getString(2));
-                user.setLastName(rs.getString(3));
-                user.setAge(rs.getByte(4));
-                users.add(user);
+            try {
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getLong(1));
+                    user.setName(rs.getString(2));
+                    user.setLastName(rs.getString(3));
+                    user.setAge(rs.getByte(4));
+                    users.add(user);
+                }
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return users;
     }
 
     public void cleanUsersTable() {
         try (Connection connection = Util.getConnection(); PreparedStatement statement = connection.prepareStatement(deleteUsers)) {
-            statement.executeUpdate();
+            try {
+                statement.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }
